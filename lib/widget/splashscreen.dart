@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inventory/app/api/authentication.dart';
 import 'package:inventory/app/data_class/auth_type.dart';
 import 'package:inventory/widget/home/employee_home.dart';
+import 'package:inventory/widget/home/owner_home.dart';
 
 import 'login.dart';
 
@@ -24,14 +25,19 @@ class _SplashscreenState extends State<Splashscreen> {
                 {
                   Future.delayed(
                       Duration(seconds: 2),
+                      () => Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => OwnerHome())))
+                }
+              //jika karyawan
+              else
+                {
+                  Future.delayed(
+                      Duration(seconds: 2),
                       () => Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => EmployeeHome())))
                 }
-              //jika karyawan
-              else
-                {}
             }
           else
             {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventory/app/api/authentication.dart';
 import 'package:inventory/widget/home/employee_home.dart';
+import 'package:inventory/widget/home/owner_home.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
@@ -28,8 +29,14 @@ class _LoginState extends State<Login> {
       bool _userpassWrong = _login != null && _login.data["code"] == 403;
 
       if (_loginsuccess) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => EmployeeHome()));
+        String _role = _login.data["data"]["role"];
+        if (_role == "employee") {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => EmployeeHome()));
+        } else {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => OwnerHome()));
+        }
       } else {
         if (_userpassWrong) {
           print('Username / Password Salah');
