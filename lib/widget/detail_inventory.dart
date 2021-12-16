@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inventory/app/api/inventory_api.dart';
+import 'package:inventory/widget/edit_inventory.dart';
 
 class DetailInventory extends StatefulWidget {
   final String namaBarang;
@@ -59,7 +60,11 @@ class _DetailInventoryState extends State<DetailInventory> {
         title: Text('${widget.namaBarang}'),
         actions: [
           TextButton(
-              onPressed: null,
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          EditInventory(id: widget.id.toString()))),
               child: Text(
                 'Edit',
                 style: TextStyle(color: Colors.white),

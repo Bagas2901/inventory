@@ -21,6 +21,66 @@ class _OwnerHomeState extends State<OwnerHome> {
     super.initState();
   }
 
+  _showMsg(String msg, List<Widget> actions) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Pesan'),
+              content: Text('$msg'),
+              actions: actions,
+            ));
+  }
+
+  _deleteInventory(String id) async {
+    Navigator.pop(context);
+    _showMsg('Memproses...', []);
+    final _delete = await InventoryApi().delete(id: id);
+
+    Navigator.pop(context);
+
+    if (_delete != null) {
+      if (_delete.data['code'] == 200) {
+        //success
+        setState(() {
+          _inventoryList = InventoryApi().showlist();
+        });
+        _showMsg('Berhasil dihapus', [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('OK'))
+        ]);
+      } else {
+        //error
+        _showMsg('Sepertinya ada yang salah', [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('OK'))
+        ]);
+      }
+      print(_delete);
+    } else {
+      //error koneksi
+      _showMsg('Periksa koneksi anda', [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text('OK'))
+      ]);
+    }
+  }
+
+  _confirmDelete(String id) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(
+                'Konfirmasi',
+              ),
+              content: Text('Yakin ingin menghapus?'),
+              actions: [
+                TextButton(
+                    onPressed: () => _deleteInventory(id),
+                    child: Text('Hapus')),
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Batal'))
+              ],
+            ));
+  }
+
   Widget _inventoryListBody(dynamic data) {
     return ListView.builder(
       itemCount: data.data['data'].length,
@@ -28,6 +88,14 @@ class _OwnerHomeState extends State<OwnerHome> {
         return Column(
           children: [
             ListTile(
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onPressed: () =>
+                    _confirmDelete(data.data['data'][index]['id'].toString()),
+              ),
               onTap: () {
                 Navigator.push(
                     context,
@@ -87,7 +155,7 @@ class _OwnerHomeState extends State<OwnerHome> {
           actions: [
             IconButton(
               onPressed: null,
-              icon: Icon(Icons.more_vert),
+              icon: Icon(Icons.download),
               color: Colors.white,
             )
           ],
