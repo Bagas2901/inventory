@@ -19,14 +19,26 @@ class InventoryApi {
       SharedPreferences _pref = await SharedPreferences.getInstance();
       String? token = _pref.getString('token');
       String? path = image != null ? image.path : "";
-      var formData = FormData.fromMap({
-        'token': token,
-        'note': note,
-        'name': name,
-        'stock': stock,
-        'unit': unit,
-        'image': await MultipartFile.fromFile(path)
-      });
+
+      var formData;
+      if (image != null) {
+        formData = FormData.fromMap({
+          'token': token,
+          'note': note,
+          'name': name,
+          'stock': stock,
+          'unit': unit,
+          'image': await MultipartFile.fromFile(path)
+        });
+      } else {
+        formData = FormData.fromMap({
+          'token': token,
+          'note': note,
+          'name': name,
+          'stock': stock,
+          'unit': unit,
+        });
+      }
       data = await dio
           .post(Endpoint.add, data: formData)
           .timeout(Duration(seconds: 30));
@@ -147,14 +159,27 @@ class InventoryApi {
 
   Future downloadPDF() async {
     final dio = Dio();
+    String? finalPath;
 
     try {
-      if (await Permission.storage.isGranted) {
+      if (await Permission.storage.request().isGranted) {
         //ijin didapatkan
+        SharedPreferences _prefs = await SharedPreferences.getInstance();
+        String? token = _prefs.getString('token');
+
         Directory? path = await getExternalStorageDirectory();
-        String filePath = path!.path + "Inventory.pdf";
-        final response = await dio.download(Endpoint.export_pdf, filePath);
+        String filePath = path!.path + "Inventory.PDF";
+        var formData = {'token': token};
+        final response = await dio
+            .download(Endpoint.export_pdf, filePath, queryParameters: formData)
+            .timeout(Duration(seconds: 60));
+        if (response.data != null) {
+          finalPath = filePath;
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
+    return finalPath;
   }
 }

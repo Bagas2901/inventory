@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:inventory/app/api/inventory_api.dart';
+import 'package:inventory/app/api/inventory_api_offline.dart';
 import 'package:inventory/widget/splashscreen.dart';
 
 class AddInventory extends StatefulWidget {
@@ -47,9 +48,20 @@ class _AddInventoryState extends State<AddInventory> {
 
       if (_addInventory == null) {
         //offline
-        showMessage("Maaf anda offline, mohon coba lagi!", [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('OK'))
-        ]);
+        await InventoryApiOffline().add(
+            name: _namaBarang.text,
+            note: _keterangan.text,
+            stock: int.parse(_stock.text),
+            unit: _satuan.text,
+            image: _gambar);
+        showMessage(
+            "Maaf anda offline, data akan terupload ketika anda terhubung ke internet!",
+            [
+              TextButton(
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Splashscreen())),
+                  child: Text('OK'))
+            ]);
       } else if (_addInventory != null && _addInventory.data["code"] == 200) {
         //success
         showMessage("Inventory Disimpan", [

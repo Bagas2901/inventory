@@ -54,7 +54,7 @@ class _SplashscreenState extends State<Splashscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: Text('aaaaa'),
+      child: Text('Ini SplashScreen'),
     ));
   }
 }
