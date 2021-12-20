@@ -7,5 +7,6 @@ class Endpoint {
   static String detail = mainEndPoint + "inventory/detail";
   static String update = mainEndPoint + "inventory/update";
   static String delete = mainEndPoint + "inventory/delete";
-  static String export_pdf = mainEndPoint + "inventory/export_pdf";
+  static String exportPdf = mainEndPoint + "inventory/export_pdf";
+  static String updateToken = mainEndPoint + "user/update_token";
 }

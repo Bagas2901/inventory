@@ -2,10 +2,14 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:inventory/app/api/authentication.dart';
 import 'package:inventory/app/api/inventory_api.dart';
 import 'package:inventory/app/api/inventory_api_offline.dart';
+import 'package:inventory/app/helper/local_notification.dart';
+import 'package:inventory/app/helper/notification.dart';
 import 'package:inventory/widget/add_invnetory.dart';
 import 'package:inventory/widget/detail_inventory.dart';
+import 'package:inventory/widget/login.dart';
 import 'package:inventory/widget/pdf_viewer.dart';
 
 class OwnerHome extends StatefulWidget {
@@ -18,8 +22,29 @@ class OwnerHome extends StatefulWidget {
 class _OwnerHomeState extends State<OwnerHome> {
   Future? _inventoryList;
 
+  String notificationTitle = 'No Title';
+  String notificationBody = 'No Body';
+  String notificationData = 'No Data';
+
   @override
   void initState() {
+    final firebaseMessaging = FCM();
+    firebaseMessaging.setNotifications();
+    String _title = '';
+    String _body = '';
+    firebaseMessaging.streamCtlr.stream.listen((notification) {
+      print('Data : $notification');
+    });
+    firebaseMessaging.bodyCtlr.stream.listen((notification) {
+      print('Body : $notification');
+      _body = notification;
+    });
+    firebaseMessaging.titleCtlr.stream.listen((notification) {
+      print('Title : $notification');
+      _title = notification;
+    });
+
+    // LocalNotification().show(body: _body, title: _title);
     // TODO: implement initState
     _inventoryList = InventoryApi().showlist();
     super.initState();
@@ -200,7 +225,7 @@ class _OwnerHomeState extends State<OwnerHome> {
         future: InventoryApiOffline().offlineData(),
         builder: (context, snapshot) {
           int? _jumlahDataOffline = 0;
-          if (snapshot.hasData && snapshot!.data!.length > 0) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             _jumlahDataOffline = snapshot.data?.length;
             return Container(
                 padding: EdgeInsets.all(20),
@@ -227,6 +252,34 @@ class _OwnerHomeState extends State<OwnerHome> {
             return Container();
           }
         });
+  }
+
+  _showOption() {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Opsi'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text('Keluar'),
+                    onTap: () async {
+                      await Authentication().logout();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => Login()));
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Download PDF'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _downloadFile();
+                    },
+                  )
+                ],
+              ),
+            ));
   }
 
   @override
@@ -258,10 +311,7 @@ class _OwnerHomeState extends State<OwnerHome> {
         appBar: AppBar(
           actions: [
             IconButton(
-              onPressed: () => _downloadFile(),
-              icon: Icon(Icons.download),
-              color: Colors.white,
-            )
+                onPressed: () => _showOption(), icon: Icon(Icons.more_vert))
           ],
           title: Text('Inventory App'),
           elevation: 0, //ketinggian

@@ -35,11 +35,14 @@ class Authentication {
 
       // print("auth_token = " + data.data["data"]["auth_token"]);
     } catch (e) {
-      print(e);
+      // print(e);
     }
 
     return data;
   }
 
-  Future logout() async {}
+  Future logout() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.clear();
+  }
 }

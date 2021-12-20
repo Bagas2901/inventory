@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:inventory/widget/login.dart';
+// import 'package:inventory/widget/login.dart';
 import 'package:inventory/widget/splashscreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(InventoryApp());
+void main() async {
+  await init();
+  runApp(const InventoryApp());
+}
+
+Future init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 }
 
 class InventoryApp extends StatelessWidget {

@@ -7,18 +7,18 @@ import 'package:inventory/app/api/inventory_api_offline.dart';
 import 'package:inventory/widget/splashscreen.dart';
 
 class AddInventory extends StatefulWidget {
-  AddInventory({Key? key}) : super(key: key);
+  const AddInventory({Key? key}) : super(key: key);
 
   @override
   _AddInventoryState createState() => _AddInventoryState();
 }
 
 class _AddInventoryState extends State<AddInventory> {
-  GlobalKey<FormState> _addinventoryForm = GlobalKey<FormState>();
-  TextEditingController _namaBarang = TextEditingController();
-  TextEditingController _stock = TextEditingController();
-  TextEditingController _satuan = TextEditingController();
-  TextEditingController _keterangan = TextEditingController();
+  final GlobalKey<FormState> _addinventoryForm = GlobalKey<FormState>();
+  final TextEditingController _namaBarang = TextEditingController();
+  final TextEditingController _stock = TextEditingController();
+  final TextEditingController _satuan = TextEditingController();
+  final TextEditingController _keterangan = TextEditingController();
 
   File? _gambar;
 

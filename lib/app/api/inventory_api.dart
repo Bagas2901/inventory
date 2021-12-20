@@ -20,7 +20,7 @@ class InventoryApi {
       String? token = _pref.getString('token');
       String? path = image != null ? image.path : "";
 
-      var formData;
+      FormData formData;
       if (image != null) {
         formData = FormData.fromMap({
           'token': token,
@@ -42,9 +42,9 @@ class InventoryApi {
       data = await dio
           .post(Endpoint.add, data: formData)
           .timeout(Duration(seconds: 30));
-      print(data);
+      // print(data);
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return data;
   }
@@ -61,9 +61,9 @@ class InventoryApi {
       data = dio
           .get(Endpoint.showlist, queryParameters: formData)
           .timeout(Duration(seconds: 30));
-      print(data);
+      // print(data);
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return data;
   }
@@ -81,9 +81,9 @@ class InventoryApi {
       data = dio
           .get(Endpoint.detail, queryParameters: formData)
           .timeout(Duration(seconds: 30));
-      print(data);
+      // print(data);
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return data;
   }
@@ -102,7 +102,7 @@ class InventoryApi {
       String? token = _pref.getString('token');
       String? path = image != null ? image.path : "";
 
-      var formData;
+      FormData formData;
       if (image != null) {
         formData = FormData.fromMap({
           'token': token,
@@ -127,9 +127,9 @@ class InventoryApi {
       data = await dio
           .post(Endpoint.update, data: formData)
           .timeout(Duration(seconds: 30));
-      print(data);
+      // print(data);
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return data;
   }
@@ -150,9 +150,9 @@ class InventoryApi {
       data = await dio
           .post(Endpoint.delete, data: formData)
           .timeout(Duration(seconds: 30));
-      print(data);
+      // print(data);
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return data;
   }
@@ -171,14 +171,14 @@ class InventoryApi {
         String filePath = path!.path + "Inventory.PDF";
         var formData = {'token': token};
         final response = await dio
-            .download(Endpoint.export_pdf, filePath, queryParameters: formData)
+            .download(Endpoint.exportPdf, filePath, queryParameters: formData)
             .timeout(Duration(seconds: 60));
         if (response.data != null) {
           finalPath = filePath;
         }
       }
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return finalPath;
   }
